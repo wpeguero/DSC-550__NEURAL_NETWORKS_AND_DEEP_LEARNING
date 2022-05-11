@@ -1,0 +1,41 @@
+// Neural Network
+digraph {
+	I1 [label="input 1"]
+	I2 [label="input 2"]
+	I3 [label="input 3"]
+	I4 [label="input 4"]
+	I5 [label="input 5"]
+	I6 [label="input 6"]
+	H11 [label="Hidden 1"]
+	H12 [label="Hidden 2"]
+	H13 [label="Hidden 3"]
+	H21 [label="Hidden 1"]
+	H22 [label="Hidden 2"]
+	O [label=Output]
+	I1 -> H11
+	I1 -> H12
+	I1 -> H13
+	I2 -> H11
+	I2 -> H12
+	I2 -> H13
+	I3 -> H11
+	I3 -> H12
+	I3 -> H13
+	I4 -> H11
+	I4 -> H12
+	I4 -> H13
+	I5 -> H11
+	I5 -> H12
+	I5 -> H13
+	I6 -> H11
+	I6 -> H12
+	I6 -> H13
+	H11 -> H21
+	H11 -> H22
+	H12 -> H21
+	H12 -> H22
+	H13 -> H21
+	H13 -> H22
+	H21 -> O
+	H22 -> O
+}

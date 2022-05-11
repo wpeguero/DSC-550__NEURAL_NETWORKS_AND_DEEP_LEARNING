@@ -49,3 +49,39 @@ for i in range(d):
     print('Machine number ' + str(i + 1) + ' was selected ' + str(nSelected[i]) + ' times')
 print('Conclusion: Best machine is machine number ' + str(np.argmax(nSelected) + 1))
 
+
+plt.figure(1)
+plt.title("Beta Distribution of Slot Machine 1")
+plt.xlabel("Probabilities")
+plt.ylabel("Number of Selections")
+plt.hist(betaDist['1'], bins=500)
+
+
+plt.figure(2)
+plt.title("Beta Distribution of Slot Machine 2")
+plt.xlabel("Probabilities")
+plt.ylabel("Number of Selections")
+plt.hist(betaDist['2'], bins=50)
+
+
+plt.figure(3)
+plt.title("Beta Distribution of Slot Machine 3")
+plt.xlabel("Probabilities")
+plt.ylabel("Number of Selections")
+plt.hist(betaDist['3'], bins=200)
+
+
+plt.figure(4)
+plt.title("Beta Distribution of Slot Machine 4")
+plt.xlabel("Probabilities")
+plt.ylabel("Number of Selections")
+plt.hist(betaDist['4'], bins=200)
+
+
+plt.figure(5)
+plt.title("Beta Distribution of Slot Machine 5")
+plt.xlabel("Probabilities")
+plt.ylabel("Number of Selections")
+plt.hist(betaDist['5'], bins=50)
+
+plt.show()

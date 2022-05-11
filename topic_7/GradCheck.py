@@ -1,4 +1,5 @@
 # gradient checking
+from min_char_rnn import *
 from random import uniform
 def gradCheck(inputs, target, hprev):
   global Wxh, Whh, Why, bh, by
@@ -7,9 +8,9 @@ def gradCheck(inputs, target, hprev):
   for param,dparam,name in zip([Wxh, Whh, Why, bh, by], [dWxh, dWhh, dWhy, dbh, dby], ['Wxh', 'Whh', 'Why', 'bh', 'by']):
     s0 = dparam.shape
     s1 = param.shape
-    assert s0 == s1, 'Error dims dont match: %s and %s.' % (`s0`, `s1`)
-    print name
-    for i in xrange(num_checks):
+    assert s0 == s1, f"Error dims dont match: {s0} and {s1}" #f'Error dims dont match: %s and %s.' % (`s0`, `s1`)
+    print(name)
+    for i in range(num_checks):
       ri = int(uniform(0,param.size))
       # evaluate cost at [x + delta] and [x - delta]
       old_val = param.flat[ri]
@@ -22,5 +23,5 @@ def gradCheck(inputs, target, hprev):
       grad_analytic = dparam.flat[ri]
       grad_numerical = (cg0 - cg1) / ( 2 * delta )
       rel_error = abs(grad_analytic - grad_numerical) / abs(grad_numerical + grad_analytic)
-      print '%f, %f => %e ' % (grad_numerical, grad_analytic, rel_error)
+      print('%f, %f => %e ' % (grad_numerical, grad_analytic, rel_error))
       # rel_error should be on order of 1e-7 or less

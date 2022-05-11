@@ -3,6 +3,7 @@ Minimal character-level Vanilla RNN model. Written by Andrej Karpathy (@karpathy
 BSD License
 """
 import numpy as np
+import GradCheck as gc
 
 # data I/O
 data = open(r'topic_7/char-rnn-master/data/tinyshakespeare/input.txt', 'r').read() # should be simple plain text file
@@ -78,6 +79,32 @@ def sample(h, seed_ix, n):
     ixes.append(ix)
   return ixes
 
+from random import uniform
+def gradCheck(inputs, target, hprev):
+  global Wxh, Whh, Why, bh, by
+  num_checks, delta = 10, 1e-5
+  _, dWxh, dWhh, dWhy, dbh, dby, _ = lossFun(inputs, targets, hprev)
+  for param,dparam,name in zip([Wxh, Whh, Why, bh, by], [dWxh, dWhh, dWhy, dbh, dby], ['Wxh', 'Whh', 'Why', 'bh', 'by']):
+    s0 = dparam.shape
+    s1 = param.shape
+    assert s0 == s1, f"Error dims dont match: {s0} and {s1}" #f'Error dims dont match: %s and %s.' % (`s0`, `s1`)
+    print(name)
+    for i in range(num_checks):
+      ri = int(uniform(0,param.size))
+      # evaluate cost at [x + delta] and [x - delta]
+      old_val = param.flat[ri]
+      param.flat[ri] = old_val + delta
+      cg0, _, _, _, _, _, _ = lossFun(inputs, targets, hprev)
+      param.flat[ri] = old_val - delta
+      cg1, _, _, _, _, _, _ = lossFun(inputs, targets, hprev)
+      param.flat[ri] = old_val # reset old value for this parameter
+      # fetch both numerical and analytic gradient
+      grad_analytic = dparam.flat[ri]
+      grad_numerical = (cg0 - cg1) / ( 2 * delta )
+      rel_error = abs(grad_analytic - grad_numerical) / abs(grad_numerical + grad_analytic)
+      print('%f, %f => %e ' % (grad_numerical, grad_analytic, rel_error))
+      # rel_error should be on order of 1e-7 or less
+
 n, p = 0, 0
 mWxh, mWhh, mWhy = np.zeros_like(Wxh), np.zeros_like(Whh), np.zeros_like(Why)
 mbh, mby = np.zeros_like(bh), np.zeros_like(by) # memory variables for Adagrad
@@ -95,7 +122,7 @@ while True:
     sample_ix = sample(hprev, inputs[0], 200)
     txt = ''.join(ix_to_char[ix] for ix in sample_ix)
     print('----\n %s \n----' % (txt, ))
-
+    gradCheck(inputs,targets, hprev)
   # forward seq_length characters through the net and fetch gradient
   loss, dWxh, dWhh, dWhy, dbh, dby, hprev = lossFun(inputs, targets, hprev)
   smooth_loss = smooth_loss * 0.999 + loss * 0.001
@@ -110,5 +137,7 @@ while True:
 
   p += seq_length # move data pointer
   n += 1 # iteration counter 
+
+
 
 ### This is a Recurrent Neural Network using AdaGrad to boost the accuracy of the model. Although the model is well thought out, the training takes a very long time as python itself is a slow programming language, its strength is mainly based upon the fact that the machine learning libraries are based on C++.

@@ -50,3 +50,9 @@ for i in range(d):
     print('Machine number ' + str(i + 1) + ' was selected ' + str(nSelected[i]) + ' times')
 print('Conclusion: Best machine is machine number ' + str(np.argmax(nSelected) + 1))
 
+for i in range(d):
+    a, b, loc, scale = beta.fit(betaDist[str(i+1)])
+    plt.figure()
+    distro = beta.pdf(np.linspace(0.001,0.999,N),a=a,b=b)
+    plt.hist(distro, bins = 300)
+plt.show()
